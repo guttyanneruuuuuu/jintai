@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Cell Guardian: Neuro Command</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene"></canvas>
+
+      <header class="hud top">
+        <h1>Cell Guardian: Neuro Command</h1>
+        <div class="chips">
+          <span id="statusChip" class="chip">状態: 安定</span>
+          <span id="fpsChip" class="chip">FPS: --</span>
+        </div>
+      </header>
+
+      <section class="hud panel left">
+        <h2>生体コア</h2>
+        <div class="stat"><label>健康度</label><progress id="healthBar" max="100" value="100"></progress><span id="healthText">100</span></div>
+        <div class="stat"><label>免疫力</label><progress id="immunityBar" max="100" value="70"></progress><span id="immunityText">70</span></div>
+        <div class="stat"><label>エネルギー</label><progress id="energyBar" max="100" value="80"></progress><span id="energyText">80</span></div>
+        <div class="stat"><label>汚染率</label><progress id="infectionBar" max="100" value="5"></progress><span id="infectionText">5%</span></div>
+        <p id="logLine">脳司令: 体内ネットワーク起動。脅威監視を開始。</p>
+      </section>
+
+      <section class="hud panel right">
+        <h2>脳司令アクション</h2>
+        <div class="buttons">
+          <button id="btnDispatch">白血球を派遣 (+1)</button>
+          <button id="btnPlatelet">血小板修復班を投入</button>
+          <button id="btnNutrition">栄養投与 (エネルギー回復)</button>
+          <button id="btnRest">休息モード (免疫回復)</button>
+          <button id="btnPulse">神経パルス (全体攻撃)</button>
+        </div>
+        <h3>放置管理（たまごっち風）</h3>
+        <p>
+          一定時間プレイヤー操作がないと「無管理状態」になり、健康度が急速低下します。<br />
+          健康度が0になると<strong>死亡（ゲームオーバー）</strong>です。
+        </p>
+        <p id="idleText">最終操作: 0秒前</p>
+      </section>
+
+      <div id="gameOver" class="overlay hidden">
+        <div class="dialog">
+          <h2>生体反応停止</h2>
+          <p>放置により臓器機能が維持できませんでした。</p>
+          <p id="finalScore">生存時間: 0秒</p>
+          <button id="btnRestart">再生プロトコル開始</button>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
