@@ -87,8 +87,10 @@ export function buildWorld(scene) {
     // 赤血球の流れ
     for (const rc of world.redCells) {
       rc.u = (rc.u + dt * rc.speed) % 1;
-      const pt = rc.curve.getPointAt(rc.u);
-      rc.mesh.position.copy(pt);
+      rc._pt.copy(rc.start).lerp(rc.end, rc.u).add(rc.offset);
+      // 軽い蛇行
+      rc._pt.y += Math.sin(rc.u * 9 + t) * 0.25;
+      rc.mesh.position.copy(rc._pt);
       rc.mesh.rotation.x += dt * 2;
       rc.mesh.rotation.z += dt * 1.4;
     }
@@ -255,7 +257,8 @@ function buildVessels(world) {
     );
     tube.position.x = (Math.random() - 0.5) * 0.01;
     world.vessels.add(tube);
-    organ.vesselCurve = curve;
+    organ.vesselStart = start.clone();
+    organ.vesselEnd = end.clone();
   }
 
   // 装飾的な毛細血管リング
@@ -287,16 +290,23 @@ function buildRedCellFlow(world, scene) {
     roughness: 0.6,
   });
   for (const organ of world.organs) {
-    if (!organ.vesselCurve) continue;
+    if (!organ.vesselStart) continue;
     const count = 6;
     for (let i = 0; i < count; i++) {
       const mesh = new THREE.Mesh(geo, mat);
       scene.add(mesh);
       world.redCells.push({
         mesh,
-        curve: organ.vesselCurve,
+        start: organ.vesselStart,
+        end: organ.vesselEnd,
         u: i / count,
         speed: 0.04 + Math.random() * 0.05,
+        offset: new THREE.Vector3(
+          (Math.random() - 0.5) * 0.6,
+          (Math.random() - 0.5) * 0.6,
+          (Math.random() - 0.5) * 0.6
+        ),
+        _pt: new THREE.Vector3(),
       });
     }
   }
