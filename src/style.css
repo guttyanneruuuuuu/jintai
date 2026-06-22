@@ -31,6 +31,13 @@ body {
 #app { position: fixed; inset: 0; }
 #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
+/* シネマティックなビネット */
+#app::after {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(5,2,9,0.55) 100%);
+}
+
 /* ---- フラッシュ ---- */
 .flash {
   position: absolute; inset: 0; pointer-events: none; opacity: 0;

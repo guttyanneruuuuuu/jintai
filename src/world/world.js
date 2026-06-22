@@ -75,6 +75,8 @@ export function buildWorld(scene) {
     core.shell.rotation.y += dt * 0.18;
     core.shell.rotation.x += dt * 0.07;
     core.inner.rotation.y -= dt * 0.4;
+    core.sparks.rotation.y += dt * 0.5;
+    core.sparks.rotation.x -= dt * 0.2;
     const pulse = 1 + Math.sin(t * 2.2) * 0.05;
     core.shell.scale.setScalar(pulse);
     // 汚染度で膜の色を変える
@@ -166,7 +168,33 @@ function buildCore() {
   );
   group.add(halo);
 
-  return { group, shell, inner };
+  // コアを巡る神経スパーク（点群）
+  const sparkCount = 120;
+  const sparkGeo = new THREE.BufferGeometry();
+  const sparkPos = new Float32Array(sparkCount * 3);
+  for (let i = 0; i < sparkCount; i++) {
+    const r = 1.9 + Math.random() * 0.9;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    sparkPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    sparkPos[i * 3 + 1] = r * Math.cos(phi);
+    sparkPos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+  }
+  sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
+  const sparks = new THREE.Points(
+    sparkGeo,
+    new THREE.PointsMaterial({
+      color: 0xfff0b0,
+      size: 0.08,
+      transparent: true,
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    })
+  );
+  group.add(sparks);
+
+  return { group, shell, inner, sparks };
 }
 
 function buildOrgan(def) {
